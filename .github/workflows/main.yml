@@ -1,4 +1,4 @@
-name: snowflake-schemachanges
+name: snowflake-devops-demo
 
 # Controls when the action will run. 
 on:
@@ -35,11 +35,9 @@ jobs:
           SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
         run: |
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-
-          echo "$SF_ACCOUNT , $SF_USERNAME , $SF_ROLE , $SF_WAREHOUSE , $SF_DATABASE , $SNOWFLAKE_PASSWORD"
           python --version
           echo "Step 1: Installing schemachange"
           pip install schemachange
           
           echo "Step 2: Running schemachange"
-          schemachange -f $GITHUB_WORKSPACE/dbscripts -a es70198.ap-south-1.aws -u siddevkipi -r ACCOUNTADMIN -w my_warehouse -d DEMO_DB
+          schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
