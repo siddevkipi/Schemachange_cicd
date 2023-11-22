@@ -35,6 +35,8 @@ jobs:
           SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
         run: |
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+
+          echo "$SF_ACCOUNT , $SF_USERNAME , $SF_ROLE , $SF_WAREHOUSE , $SF_DATABASE , $SNOWFLAKE_PASSWORD"
           python --version
           echo "Step 1: Installing schemachange"
           pip install schemachange
