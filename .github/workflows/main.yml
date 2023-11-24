@@ -1,4 +1,4 @@
-name: showcase_cicd_snowflake
+name: scehmachange_cicd_snowflake
 
 # Controls when the action will run. 
 on:
