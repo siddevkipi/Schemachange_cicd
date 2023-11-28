@@ -20,25 +20,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      
+      - name: Validate Schema Changes
+        run: ./validate_schema_changes.sh
 
-      - name: Check Versioning Conventions and Underscores
-        run: |
-          for file in $(find . -name '*.sql'); do
-            # Check if the filename follows versioning conventions (e.g., v1.0.0__insert_script.sql)
-            if  [[ $(basename "$file") =~ ^V\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$ ]]; then
-              echo "Correct versioning convention in file $file"
-              exit 1
-            fi
+      - name: Use Python 3.8.x
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: 3.8.x
 
-            # Check if the filename contains underscores
-            #if [[ $(basename "$file") != *_* ]]; then
-              #echo "Error: Underscores are required in the filename for file $file"
-              #exit 1
-           # fi
-          done
-
-      - name: Database Schema Change and Deployment
+      - name: Run schemachange
+        env:
+          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
+          SF_ROLE: ${{ secrets.SF_ROLE }}
+          SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+          SF_DATABASE: ${{ secrets.SF_DATABASE }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
         run: |
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
           python --version
@@ -48,4 +45,4 @@ jobs:
           
           
           echo "Step 2: Running schemachange"
-          schemachange deploy -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
