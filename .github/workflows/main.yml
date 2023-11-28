@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - 'dbscripts/**' 
+      - 'dbscripts1/**' 
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,6 +24,16 @@ jobs:
         uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.8.x
+		  
+		  
+	  - name: Check Versioning Conventions and Underscores
+        run: |
+          for file in $(find . -name '*.sql'); do
+            # Check if the filename follows versioning conventions (e.g., v1.0.0__insert_script.sql)
+            if  [[ $(basename "$file") =~ ^v\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$ ]]; then
+              echo "valid versioning convention in file $file"
+              exit 1
+            fi
 
       - name: Run schemachange
         env:
@@ -42,4 +52,4 @@ jobs:
           
           
           echo "Step 2: Running schemachange"
-          schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          schemachange -f $GITHUB_WORKSPACE/dbscripts1 -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
