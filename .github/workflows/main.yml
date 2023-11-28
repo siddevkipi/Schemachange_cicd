@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: 3.8.x
 		  
-	  
+      - name: Check Versioning Conventions and Underscores 
         run: |
           for file in $(find . -name '*.sql'); do
             # Check if the filename follows versioning conventions (e.g., v1.0.0__insert_script.sql)
