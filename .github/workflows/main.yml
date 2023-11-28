@@ -47,6 +47,7 @@ jobs:
               echo "Error: Invalid versioning convention in file $file"
               exit 1
             fi
+          done
           
           echo "Step 2: Running schemachange"
           schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
