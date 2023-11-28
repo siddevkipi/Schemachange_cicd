@@ -1,14 +1,13 @@
 #!/bin/bash
 
 for file in $(find . -type f -name '*.sql'); do
-    if ! [[ $(basename "$file") =~ ^v\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$ ]]; then
+    echo "Checking $file"
+    if ! [[ $(basename "$file") =~ ^[vV]\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$ ]]; then
         echo "Error: Invalid naming convention in $file"
         exit 1
     fi
 
     # Add additional checks as needed
-
 done
 
-echo "Validation successful"
 
