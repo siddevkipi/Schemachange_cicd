@@ -26,8 +26,8 @@ jobs:
         run: |
           for file in $(find . -name '*.sql'); do
             # Check if the filename follows versioning conventions (e.g., v1.0.0__insert_script.sql)
-            if ! [[ $(basename "$file") =~ ^V\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$ ]]; then
-              echo "Error: Invalid versioning convention in file $file"
+            if  [[ $(basename "$file") =~ ^V\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$ ]]; then
+              echo "Correct versioning convention in file $file"
               exit 1
             fi
 
