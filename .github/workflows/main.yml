@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Validate Schema Changes
-        run: ./validate_schema_changes.sh
+        run: dbscripts/validate_schema_changes.sh
 
       - name: Use Python 3.8.x
         uses: actions/setup-python@v2.2.1
