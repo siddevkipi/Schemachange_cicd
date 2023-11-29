@@ -20,17 +20,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set execute permissions for validation script
-        run: |
-          chmod +x dbscripts/validate_schema_changes.sh
-
-      - name: Validate Schema Changes
-        run: dbscripts/validate_schema_changes.sh
-
       - name: Use Python 3.8.x
         uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.8.x
+
+      - name: Run Python Script
+        run: |
+         python sid.py
 
       - name: Run schemachange
         env:
