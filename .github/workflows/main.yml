@@ -32,6 +32,10 @@ jobs:
         run: |
          echo "SF_ACCOUNT=${{ secrets.SF_ACCOUNT }}" >> $GITHUB_ENV
          echo "SF_USERNAME=${{ secrets.SF_USERNAME }}" >> $GITHUB_ENV
+         echo "SF_ROLE=${{ secrets.SF_ROLE }}" >> $GITHUB_ENV
+         echo "SF_WAREHOUSE=${{ secrets.SF_WAREHOUSE }}" >> $GITHUB_ENV
+         echo "SF_DATABASE=${{ secrets.SF_DATABASE }}" >> $GITHUB_ENV
+         echo "SF_PASSWORD=${{ secrets.SF_PASSWORD }}" >> $GITHUB_ENV
         # Set other Snowflake environment variables as needed
 
       - name: Run Python Script
