@@ -14,6 +14,9 @@ for entry in os.scandir(directory):
 
         # Check if the file name matches the pattern
         if re.match(pattern, file_name):
-            print(f"File '{file_name}' matches the pattern.")
+            print(f"File '{file_name}' matches the pattern. Proceeding with deployment to Snowflake.")
+            # Add your Snowflake deployment logic here
         else:
-            print(f"File '{file_name}' does not match the pattern.")
+            print(f"File '{file_name}' does not match the pattern. Skipping deployment to Snowflake.")
+            # Skip deployment for files that do not match the pattern
+            continue
