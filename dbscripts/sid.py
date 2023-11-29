@@ -1,5 +1,6 @@
 import os
 import re
+import subprocess
 
 directory = "dbscripts/"
 pattern = r"^[vV]\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$"
@@ -10,13 +11,19 @@ for entry in os.scandir(directory):
         # Extract the file name from the full path
         file_name = entry.name
         print(file_name)
-        print(pattern)
 
         # Check if the file name matches the pattern
         if re.match(pattern, file_name):
-            print(f"File '{file_name}' matches the pattern. Proceeding with deployment to Snowflake.")
-            # Add your Snowflake deployment logic here
+            print(f"File '{file_name}' matches the pattern. Proceeding with schemachange.")
+
+            # Add schemachange logic here
+            schemachange_command = (
+                f"schemachange -f {directory} -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE "
+                f"-w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
+            )
+            subprocess.run(schemachange_command, shell=True, check=True)
+            
         else:
-            print(f"File '{file_name}' does not match the pattern. Skipping deployment to Snowflake.")
-            # Skip deployment for files that do not match the pattern
+            print(f"File '{file_name}' does not match the pattern. Skipping schemachange.")
+            # Skip schemachange for files that do not match the pattern
             continue
