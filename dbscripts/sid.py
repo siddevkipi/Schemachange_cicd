@@ -18,8 +18,9 @@ for entry in os.scandir(directory):
 
             # Add schemachange logic here
             schemachange_command = (
-                f"schemachange -f {directory} -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE "
-                f"-w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
+                f"schemachange -f {directory} -a {os.environ['SF_ACCOUNT']} -u {os.environ['SF_USERNAME']} "
+                f"-r {os.environ['SF_ROLE']} -w {os.environ['SF_WAREHOUSE']} -d {os.environ['SF_DATABASE']} "
+                f"-c {os.environ['SF_DATABASE']}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
             )
             subprocess.run(schemachange_command, shell=True, check=True)
             
