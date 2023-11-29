@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Python Script
         run: |
-         python sid.py
+         python dbscripts/sid.py
 
       - name: Run schemachange
         env:
