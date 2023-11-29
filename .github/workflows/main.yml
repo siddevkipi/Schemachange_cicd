@@ -28,6 +28,12 @@ jobs:
       - name: Install schemachange
         run: pip install schemachange
 
+      - name: Set up Environment Variables
+        run: |
+         echo "SF_ACCOUNT=${{ secrets.SF_ACCOUNT }}" >> $GITHUB_ENV
+         echo "SF_USERNAME=${{ secrets.SF_USERNAME }}" >> $GITHUB_ENV
+        # Set other Snowflake environment variables as needed
+
       - name: Run Python Script
         run: |
          python dbscripts/sid.py
