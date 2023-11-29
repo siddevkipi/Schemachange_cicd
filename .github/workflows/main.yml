@@ -25,6 +25,9 @@ jobs:
         with:
           python-version: 3.8.x
 
+      - name: Install schemachange
+        run: pip install schemachange
+
       - name: Run Python Script
         run: |
          python dbscripts/sid.py
