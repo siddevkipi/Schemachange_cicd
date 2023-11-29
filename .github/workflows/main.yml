@@ -26,7 +26,7 @@ jobs:
           python-version: 3.8.x
 
       - name: Install schemachange
-        run: pip install schemachange
+        run: pip install --upgrade schemachange
 
       - name: Set up Environment Variables
         run: |
