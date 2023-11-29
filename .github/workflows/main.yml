@@ -1,43 +1,67 @@
-name: showcase_cicd_snowflake
+name: Run Schemachange
 
-# Controls when the action will run. 
 on:
   push:
     branches:
-      - main
-    paths:
-      - 'dbscripts/**' 
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+      - main  # Adjust the branch name as needed
 
 jobs:
-  snowflake-cicd-showcase:
+  run_schemachange:
     runs-on: ubuntu-latest
 
+    env:
+      SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+      SF_USERNAME: ${{ secrets.SF_USERNAME }}
+      SF_ROLE: ${{ secrets.SF_ROLE }}
+      SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+      SF_DATABASE: ${{ secrets.SF_DATABASE }}
+      SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: Use Python 3.8.x
-        uses: actions/setup-python@v2.2.1
-        with:
-          python-version: 3.8.x
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8  # Adjust the Python version as needed
 
-      - name: Install schemachange
-        run: pip install --upgrade schemachange
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install schemachange
 
-      - name: Set up Environment Variables
-        run: |
-         echo "SF_ACCOUNT=${{ secrets.SF_ACCOUNT }}" >> $GITHUB_ENV
-         echo "SF_USERNAME=${{ secrets.SF_USERNAME }}" >> $GITHUB_ENV
-         echo "SF_ROLE=${{ secrets.SF_ROLE }}" >> $GITHUB_ENV
-         echo "SF_WAREHOUSE=${{ secrets.SF_WAREHOUSE }}" >> $GITHUB_ENV
-         echo "SF_DATABASE=${{ secrets.SF_DATABASE }}" >> $GITHUB_ENV
-         echo "SNOWFLAKE_PASSWORD=${{ secrets.SF_PASSWORD }}" >> $GITHUB_ENV
-        # Set other Snowflake environment variables as needed
+    - name: Run Python Script
+      run: |
+        python - <<EOF
+import os
+import re
+import subprocess
 
-      - name: Run Python Script
-        run: |
-         python dbscripts/sid.py
+directory = "dbscripts/"
+pattern = r"^[vV]\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$"
+
+# Use os.scandir to get a list of files in the directory
+for entry in os.scandir(directory):
+    if entry.is_file():
+        # Extract the file name from the full path
+        file_name = entry.name
+        print(file_name)
+
+        # Check if the file name matches the pattern
+        if re.match(pattern, file_name):
+            print(f"File '{file_name}' matches the pattern. Proceeding with schemachange.")
+
+            # Add schemachange logic here
+            schemachange_command = (
+                f"schemachange -f {directory} -a {os.environ['SF_ACCOUNT']} -u {os.environ['SF_USERNAME']} "
+                f"-r {os.environ['SF_ROLE']} -w {os.environ['SF_WAREHOUSE']} -d {os.environ['SF_DATABASE']} "
+                f"-c {os.environ['SF_DATABASE']}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
+            )
+            subprocess.run(schemachange_command, shell=True, check=True)
+            
+        else:
+            print(f"File '{file_name}' does not match the pattern. Skipping schemachange.")
+            # Skip schemachange for files that do not match the pattern
+            continue
+EOF
