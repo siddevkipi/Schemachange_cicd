@@ -1,12 +1,12 @@
 name: showcase_cicd_snowflake
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   push:
     branches:
       - main
     paths:
-      - 'dbscripts/**' 
+      - 'dbscripts/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -41,12 +41,12 @@ jobs:
 
           echo "Step 2: Running schemachange"
           # Run schemachange for files matching the pattern
-          find $GITHUB_WORKSPACE/dbscripts -type f -regex '.*[vV]\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$' | while read -r file; do
+          find "$GITHUB_WORKSPACE/dbscripts" -type f -regex '.*[vV][0-9]\+\.[0-9]\+\.[0-9]\+__[a-zA-Z0-9_]\+\.sql$' | while read -r file; do
             echo "Processing file: $file"
             schemachange -f "$file" -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
-          done
+          done || true
 
           # Print files that do not match the pattern
-          find $GITHUB_WORKSPACE/dbscripts -type f ! -regex '.*[vV]\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$' | while read -r file; do
-            echo "File does not match the pattern: $file"
+          find "$GITHUB_WORKSPACE/dbscripts" -type f -not -regex '.*[vV][0-9]\+\.[0-9]\+\.[0-9]\+__[a-zA-Z0-9_]\+\.sql$' -print | while read -r file; do
+            echo "Skipping file: $file"
           done
