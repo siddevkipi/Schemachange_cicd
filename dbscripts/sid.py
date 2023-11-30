@@ -17,12 +17,10 @@ for entry in os.scandir(directory):
             print(f"File '{file_name}' matches the pattern. Proceeding with schemachange.")
 
             # Add schemachange logic here
-            schemachange_command = (
-                f"schemachange -f {directory} -a {os.environ['SF_ACCOUNT']} -u {os.environ['SF_USERNAME']} "
-                f"-r {os.environ['SF_ROLE']} -w {os.environ['SF_WAREHOUSE']} -d {os.environ['SF_DATABASE']} "
-                f"-c {os.environ['SF_DATABASE']}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
-            )
-            subprocess.run(schemachange_command, shell=True, check=True)
+            echo "Step 1: Installing schemachange"
+            pip install schemachange
+            echo "Step 2: Running schemachange"
+            schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
             
         else:
             print(f"File '{file_name}' does not match the pattern. Skipping schemachange.")
