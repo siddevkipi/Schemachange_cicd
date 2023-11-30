@@ -20,6 +20,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set Execute Permission
+        run: chmod +x path/to/sid.groovy
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+         distribution: 'adopt'
+         java-version: '11'
+
       - name: Use Python 3.8.x
         uses: actions/setup-python@v2.2.1
         with:
