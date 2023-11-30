@@ -10,16 +10,14 @@ for entry in os.scandir(directory):
         if re.match(pattern, file_name):
             print(f"File '{file_name}' matches the pattern. Proceeding with schemachange.")
             print("Running schemachange")
-            os.system('schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table')
+            schemachange_command = (
+                f"schemachange -f {os.path.join(directory, file_name)} -a {os.environ['SF_ACCOUNT']} "
+                f"-u {os.environ['SF_USERNAME']} -r {os.environ['SF_ROLE']} "
+                f"-w {os.environ['SF_WAREHOUSE']} -d {os.environ['SF_DATABASE']} "
+                f"-c {os.environ['SF_DATABASE']}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
+            )
+            subprocess.run(schemachange_command, shell=True, check=True)
+            
         else:
             print(f"File '{file_name}' does not match the pattern. Skipping schemachange.")
             continue
-
-
-
-
-
-
-
-
-
