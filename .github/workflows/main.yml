@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set Execute Permission
-        run: chmod +x path/to/sid.groovy
+        run: chmod +x dbscripts/sid.groovy
 
       - name: Set up JDK
         uses: actions/setup-java@v2
