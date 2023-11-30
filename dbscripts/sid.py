@@ -9,13 +9,10 @@ for entry in os.scandir(directory):
         file_name = entry.name
         print(f"Processing file: {file_name}")
 
-        # Change the current working directory to the scripts directory
-        os.chdir(directory)
-
-        # Specify the file as the root folder in the command
+        # Specify the directory as the root folder in the command
         schemachange_command = (
-            f"schemachange -f {file_name} -a {os.environ['SF_ACCOUNT']} "
-            f"-u {os.environ['SF_USERNAME']} -r . "  # Use '.' to represent the current directory as root
+            f"schemachange -f {os.path.join(directory, file_name)} -a {os.environ['SF_ACCOUNT']} "
+            f"-u {os.environ['SF_USERNAME']} -r {os.path.abspath(directory)} "
             f"-w {os.environ['SF_WAREHOUSE']} -d {os.environ['SF_DATABASE']} "
             f"-c {os.environ['SF_DATABASE']}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
         )
@@ -26,6 +23,3 @@ for entry in os.scandir(directory):
         except subprocess.CalledProcessError as e:
             print(f"Error running schemachange for file '{file_name}'. Return code: {e.returncode}")
             print(e)
-
-        # Change back to the original working directory
-        os.chdir('..')
