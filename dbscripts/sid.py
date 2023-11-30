@@ -16,7 +16,7 @@ for entry in os.scandir(directory):
         if re.match(pattern, file_name):
             print(f"File '{file_name}' matches the pattern. Proceeding with schemachange.")
 
-            # Add schemachange logic here
+          # Add schemachange logic here
           echo "Step 1: Installing schemachange"
           pip install schemachange
           echo "Step 2: Running schemachange"
