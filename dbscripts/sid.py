@@ -17,9 +17,8 @@ for entry in os.scandir(directory):
             print(f"File '{file_name}' matches the pattern. Proceeding with schemachange.")
 
           # Add schemachange logic here
-          echo "Step 1: Installing schemachange"
-          pip install schemachange
-          echo "Step 2: Running schemachange"
+          
+          echo "Running schemachange"
           schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
             
         else:
