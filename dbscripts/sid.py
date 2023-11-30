@@ -10,6 +10,7 @@ for entry in os.scandir(directory):
         if re.match(pattern, file_name):
             print(f"File '{file_name}' matches the pattern. Proceeding with schemachange.")
             print("Running schemachange")
+            root_folder = os.path.abspath(directory)
             schemachange_command = (
                 f"schemachange -f {os.path.join(directory, file_name)} -a {os.environ['SF_ACCOUNT']} "
                 f"-u {os.environ['SF_USERNAME']} -r {os.environ['SF_ROLE']} "
