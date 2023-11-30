@@ -9,11 +9,14 @@ for entry in os.scandir(directory):
         file_name = entry.name
         print(f"Processing file: {file_name}")
 
-        # Specify the directory as the root folder in the command
+        # Generate the absolute path to the SQL file
+        sql_file_path = os.path.abspath(os.path.join(directory, file_name))
+
+        # Specify the absolute path to the file in the command
         schemachange_command = (
-            f"schemachange -f {os.path.join(directory, file_name)} -a {os.environ['SF_ACCOUNT']} "
-            f"-u {os.environ['SF_USERNAME']} -r {os.path.abspath(directory)} "
-            f"-w {os.environ['SF_WAREHOUSE']} -d {os.environ['SF_DATABASE']} "
+            f"schemachange -f {sql_file_path} -a {os.environ['SF_ACCOUNT']} "
+            f"-u {os.environ['SF_USERNAME']} -w {os.environ['SF_WAREHOUSE']} "
+            f"-d {os.environ['SF_DATABASE']} "
             f"-c {os.environ['SF_DATABASE']}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table"
         )
 
