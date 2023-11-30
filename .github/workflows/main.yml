@@ -1,5 +1,6 @@
 name: showcase_cicd_snowflake
 
+# Controls when the action will run. 
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
     paths:
       - 'dbscripts/**' 
 
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -14,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -22,24 +25,19 @@ jobs:
         with:
           python-version: 3.8.x
 
-      - name: Check file pattern and run schemachange
-        env:
-          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
-          SF_USERNAME: ${{ secrets.SF_USERNAME }}
-          SF_ROLE: ${{ secrets.SF_ROLE }}
-          SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SF_DATABASE: ${{ secrets.SF_DATABASE }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
+      - name: Install schemachange
+        run: pip install schemachange
+
+      - name: Set up Environment Variables
         run: |
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          python --version
-          
-          # Use Python script to check file pattern
-          if python -c "import os, re; pattern = re.compile(r'^[vV]\d+\.\d+\.\d+__[a-zA-Z0-9_]+\.sql$'); files = os.listdir('dbscripts/'); exit(any(pattern.match(file) for file in files))"; then
-            echo "Step 1: Installing schemachange"
-            pip install schemachange
-            echo "Step 2: Running schemachange"
-            schemachange -f $GITHUB_WORKSPACE/dbscripts -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
-          else
-            echo "File names in dbscripts do not match the pattern. Skipping Step 2: Running schemachange."
-          fi
+         echo "SF_ACCOUNT=${{ secrets.SF_ACCOUNT }}" >> $GITHUB_ENV
+         echo "SF_USERNAME=${{ secrets.SF_USERNAME }}" >> $GITHUB_ENV
+         echo "SF_ROLE=${{ secrets.SF_ROLE }}" >> $GITHUB_ENV
+         echo "SF_WAREHOUSE=${{ secrets.SF_WAREHOUSE }}" >> $GITHUB_ENV
+         echo "SF_DATABASE=${{ secrets.SF_DATABASE }}" >> $GITHUB_ENV
+         echo "SF_PASSWORD=${{ secrets.SF_PASSWORD }}" >> $GITHUB_ENV
+        # Set other Snowflake environment variables as needed
+
+      - name: Run Python Script
+        run: |
+         python dbscripts/sid.py
