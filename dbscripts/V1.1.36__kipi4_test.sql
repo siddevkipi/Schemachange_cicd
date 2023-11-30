@@ -1,2 +1,2 @@
 use database DEMO_DB;
-create schema KIPI12;
+create schema KIPI18;
